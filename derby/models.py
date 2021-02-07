@@ -1,13 +1,18 @@
 from django.db import models
+from colorfield.fields import ColorField
 
 
 class Group(models.Model):
     name = models.CharField(max_length=200)
+    color = ColorField(unique=True, default='##FF0000')
+
+    def __str__(self):
+        return f"Group: {self.name}"
 
 
 class Car(models.Model):
     name = models.CharField(max_length=200)
-    picture = models.ImageField()
+    picture = models.ImageField(upload_to="uploads/")
     owner = models.CharField(max_length=200)
     number = models.IntegerField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -17,6 +22,9 @@ class Car(models.Model):
             models.UniqueConstraint(
                 fields=['group', 'number'], name='Unique car number in group')
         ]
+
+    def __str__(self):
+        return f"Car: {self.name} - {self.group} ({self.number})"
 
 
 class Heat(models.Model):
