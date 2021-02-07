@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import string
+import random
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,9 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-import os, random, string
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', ''.join(random.choices(string.ascii_uppercase + string.digits, k=20)))
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', ''.join(
+    random.choices(string.ascii_uppercase + string.digits, k=20)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -31,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'derby.apps.DerbyConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
