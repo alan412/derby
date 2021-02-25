@@ -5,3 +5,18 @@ div.settings {
 }
 div.settings label       { text-align:right; }
 div.settings label:after { content: ":"; }
+
+h1.center-title{
+    text-align: center;
+}
+
+.column {
+    float: left;
+    width: 8%;
+    padding:2px;
+  }
+.rank{
+    float: left;
+    width: 3%;
+    padding: 2px;
+}
