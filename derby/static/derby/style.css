@@ -21,6 +21,6 @@ h1.center-title{
     padding: 2px;
 }
 
-table.border{
-    
+.Leaderboard{
+    border:1px solid black
 }
