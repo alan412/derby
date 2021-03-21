@@ -24,3 +24,9 @@ h1.center-title{
 .Leaderboard{
     border:1px solid black
 }
+
+table.Leaderboard th{
+    border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: black;
+}
