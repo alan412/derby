@@ -23,5 +23,14 @@ def currentHeat(request):
     return render(request, "derby/currentHeat.html", context)
 
 def leaderboard(request):
-    context = {}
+    listCars = [
+        {"owner" : "DAD", "name" : "slowpoke", "picture" : "", "speed" : "01:07.02"},
+        {"owner" : "Joshua", "name" : "Wabbit","picture" : "Wabbit.jpg", "speed" : "00:42.42"},
+        {"owner" : "DAD", "name" : "slowpoke", "picture" : "", "speed" : "01:03.02"},
+        {"owner" : "Mom", "name" : "Filthy Panda Stealer", "picture" : "", "speed" : "00:43.02"},
+        {"owner" : "Joshua", "name" : "Wabbit","picture" : "Wabbit.jpg", "speed" : "00:49.42"},
+        {"owner" : "DAD", "name" : "slowpoke", "picture" : "", "speed" : "01:07.02"},
+        {"owner" : "Mom", "name" : "Filthy Panda Stealer", "picture" : "", "speed" : "00:48.02"},
+    ]
+    context = {"leaderboard" : sorted(listCars, key = lambda car: car['speed'])[:5]}
     return render(request, "derby/leaderboard.html", context)

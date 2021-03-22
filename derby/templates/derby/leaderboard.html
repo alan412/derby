@@ -1,5 +1,38 @@
 {% extends "derby/base.html" %}
 {% block title %}Leaderboard{% endblock %}
 {% block content %}
-Leaderboard
+<h1 class="center-title">
+    <u><b>Leaderboard</b></u>
+</h1>
+
+<table class="Leaderboard">
+    <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Picture</th>
+        <th>Speed</th>
+    </tr>
+    {% for car in leaderboard %}
+    <tr>
+        <td>
+            {{forloop.counter}}.
+        </td> 
+        <td>
+            {{car.name}}
+        </td>
+        <td>
+            {{car.owner}}
+        </td>
+        <td>{% if car.picture %}
+            <img src="{{car.picture}}"  width="50" height="60">
+            {% endif %}
+        </td>
+        <td>
+            {{car.speed}}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}

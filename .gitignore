@@ -132,3 +132,9 @@ dmypy.json
 
 # Plece for uploads
 uploads/
+
+# Mac files
+.DS_STORE
+
+# Visual stuidio
+.vscode/*
