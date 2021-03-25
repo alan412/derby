@@ -2,26 +2,12 @@
 {% block title %}Derby Registration{% endblock %}
 {% block content %}
 <h1>Derby Registration</h1>
-<form>
-    <div class="settings">
-        <label for="group">Choose a group</label>
-        <select id="group" name="group">
-            <option value="ranger_kids">Ranger kids</option>
-            <option value="discovery">discovery</option>
-            <option value="adventure">adventure</option>
-            <option value="open">open</option>
-        </select>
-
-        <label for="oname">Owner name</label>
-        <input type="text" id="oname" name="oname" placeholder="Whose car" />
-
-        <label for="cname">Car name</label>
-        <input type="text" id="cname" name="cname" placeholder="What is the car's name" />
-
-        <label for="photo">photo of the car</label>
-        <input name="photo" type="file" accept="image/*" />
-
-        <input type="submit">
-    </div>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Submit">
 </form>
+
 {% endblock %}
