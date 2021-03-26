@@ -1,0 +1,25 @@
+{% extends "derby/base.html" %}
+{% block title %}Derby Registration{% endblock %}
+{% block content %}
+<h1>Derby Registration</h1>
+
+Please put a sticker with
+<H1 style="background-color: {{ color }};">{{ number }}</H1>
+on the car:
+<IMG width=400 src="/{{ imglink }}" />
+<table>
+    <tr>
+        <td>Owner:</td>
+        <td>{{ owner }}</td>
+    </tr>
+    <tr>
+        <td>Car Name:</td>
+        <td>{{ name }}</td>
+    </tr>
+    <tr>
+        <td>Group:</td>
+        <td>{{ group }}</td>
+    </tr>
+</table>
+<A HREF="/derby/register"><button>Register Another</button></A>
+{% endblock %}

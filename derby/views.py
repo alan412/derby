@@ -12,7 +12,14 @@ def register(request):
             car = form.save(commit=False)
             car.assignNumber()
             car.save()
-            return render(request, "derby/start.html", {})
+            context = {"color": car.group.color,
+                       "imglink": car.picture,
+                       "owner": car.owner,
+                       "name": car.name,
+                       "group": car.group.name,
+                       "number": car.number}
+
+            return render(request, "derby/registered.html", context)
     else:
         form = RegisterForm()
     context = {'form': form}
