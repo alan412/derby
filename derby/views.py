@@ -6,10 +6,13 @@ from derby.forms import RegisterForm
 
 def register(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
             # process data
-            return HttpResponseRedirect('derby/register')
+            car = form.save(commit=False)
+            car.assignNumber()
+            car.save()
+            return render(request, "derby/start.html", {})
     else:
         form = RegisterForm()
     context = {'form': form}
