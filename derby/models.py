@@ -28,10 +28,8 @@ class Car(models.Model):
             group=self.group).order_by('-number').first()
         if not lastCar:
             self.number = 1
-            print(f"only one: {{self.number}}")
         else:
             self.number = lastCar.number + 1
-            print(f"added one {{self.number}}")
 
     def __str__(self):
         return f"Car: {self.name} - {self.group} ({self.number})"
