@@ -26,6 +26,11 @@ def register(request):
     return render(request, "derby/register.html", context)
 
 
+def main(request):
+    context = {}
+    return render(request, "derby/main.html", context)
+
+
 def start(request):
     context = {}
     return render(request, "derby/start.html", context)
@@ -44,6 +49,12 @@ def audience(request):
 def currentHeat(request):
     context = {}
     return render(request, "derby/currentHeat.html", context)
+
+
+def remainingHeats(request):
+    # needs to be changed to be the color of the group
+    context = {"color": "red"}
+    return render(request, "derby/remaining.html", context)
 
 
 def leaderboard(request):

@@ -1,0 +1,42 @@
+{% extends "derby/base.html" %}
+{% block title %}Derby Software{% endblock %}
+{% block content %}
+<H1>{{ groupTitle }}</h1>
+{% for heat in remainingHeats %}
+<H1>Heat {{heat.number}} of {{ totalHeats }}</H1>
+<table class="RemainingHeat">
+    <tr>
+        <th>Lane</th>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Picture</th>
+    </tr>
+    {% for car in heat %}
+    <tr>
+        <td>
+            {{forloop.counter}}.
+        </td>
+        <td style="background-color: {{ color }};">
+            {{ car.number }}
+        </td>
+        <td>
+            {{car.name}}
+        </td>
+        <td>
+            {{car.owner}}
+        </td>
+        <td>{% if car.picture %}
+            <img src="{{car.picture}}" width="50" height="60">
+            {% endif %}
+        </td>
+        <td>
+            {{car.speed}}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<br />
+{% endfor %}
+
+{% endblock %}
