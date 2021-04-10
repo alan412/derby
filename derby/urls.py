@@ -9,5 +9,6 @@ urlpatterns = [
     path('currentHeat', views.currentHeat),
     path('leaderboard', views.leaderboard),
     path('nextHeat', views.nextHeat),
+    path('allCars', views.allCars),
     path('start', views.start)
 ]

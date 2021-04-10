@@ -2,6 +2,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.http import HttpResponse
 from derby.forms import RegisterForm
+from derby.models import Car
 
 
 def register(request):
@@ -55,6 +56,11 @@ def remainingHeats(request):
     # needs to be changed to be the color of the group
     context = {"color": "red"}
     return render(request, "derby/remaining.html", context)
+
+
+def allCars(request):
+    context = {"cars": Car.objects.all()}
+    return render(request, "derby/allCars.html", context)
 
 
 def leaderboard(request):

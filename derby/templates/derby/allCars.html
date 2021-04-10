@@ -1,0 +1,38 @@
+{% extends "derby/base.html" %}
+{% block title %}All Cars{% endblock %}
+{% block content %}
+<h1 class="center-title">
+    <u><b>All Cars</b></u>
+</h1>
+
+<table class="All Cars">
+    <tr>
+        <th>Number</th>
+        <th>Group</th>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Picture</th>
+    </tr>
+    {% for car in cars %}
+    <tr>
+        <td>
+            {{car.number}}
+        </td>
+        <td>
+            {{car.group}}
+        </td>
+        <td>
+            {{car.name}}
+        </td>
+        <td>
+            {{car.owner}}
+        </td>
+        <td>{% if car.picture %}
+            <img src=" /{{car.picture}}" width="50" height="60">
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
