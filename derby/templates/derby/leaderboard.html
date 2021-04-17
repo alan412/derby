@@ -1,6 +1,13 @@
 {% extends "derby/base.html" %}
 {% block title %}Leaderboard{% endblock %}
 {% block content %}
+{% if audience %}
+    <script>
+        var timer = setTimeout(function() {
+            window.location='/derby/audience?next={{next}}'
+        }, {{timeout}});
+    </script>
+{% endif %}
 <h1 class="center-title">
     <u><b>Leaderboard</b></u>
 </h1>

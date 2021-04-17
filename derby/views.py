@@ -48,8 +48,14 @@ def nextHeat(request):
 
 
 def audience(request):
-    context = {}
-    return render(request, "derby/audience.html", context)
+    template = request.GET.get('next', 'derby/leaderboard.html')
+
+    if template == 'derby/leaderboard.html':
+        context = {"timeout" : 5000, "audience" : True, "next" : "derby/nextHeat.html"}
+    else:
+        context = {}
+
+    return render(request, template, context)
 
 
 def currentHeat(request):
