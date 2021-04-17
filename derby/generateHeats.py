@@ -45,11 +45,9 @@ def generateHeats(group):
             for sortedCar in sortedCars:
                 car = sortedCar.car
                 if car in carPlaced:
-                    print(f"+{car.name}")
                     continue
                 # car hasn't been in lane
                 if not hasCarBeenInLane(car, lane):
-                    print(f"Put {car.name} in {lane.number}")
                     newHeat.save()
                     newResult = Result()
                     newResult.heat = newHeat
@@ -58,7 +56,5 @@ def generateHeats(group):
                     newResult.save()
                     carPlaced.append(car)
                     break
-                else:
-                    print(f"-{car.name}")
         if not carPlaced:
             done = True
