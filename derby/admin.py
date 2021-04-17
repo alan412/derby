@@ -1,10 +1,22 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Group, Car, Heat, Result
+from .models import Group, Car, Heat, Result, Lane
 
-admin.site.register(Heat)
-admin.site.register(Result)
+
+@admin.register(Heat)
+class HeatAdmin(admin.ModelAdmin):
+    list_display = ('group', 'number')
+
+
+@admin.register(Result)
+class ResultAdmin(admin.ModelAdmin):
+    list_display = ('heat', 'lane', 'car', 'time')
+
+
+@admin.register(Lane)
+class LaneAdmin(admin.ModelAdmin):
+    list_display = ('number', 'active')
 
 
 @admin.register(Car)

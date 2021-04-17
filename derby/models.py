@@ -40,6 +40,17 @@ class Heat(models.Model):
     number = models.IntegerField()
     finished = models.BooleanField()
 
+    def assignNumber(self):
+        lastHeat = Heat.objects.filter(
+            group=self.group).order_by('-number').first()
+        if not lastHeat:
+            self.number = 1
+        else:
+            self.number = lastHeat.number + 1
+
+    def __str__(self):
+        return f"{self.group.name} ({self.number})"
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -47,8 +58,16 @@ class Heat(models.Model):
         ]
 
 
+class Lane(models.Model):
+    number = models.IntegerField(unique=True)
+    active = models.BooleanField()
+
+    def __str__(self):
+        return str(self.number)
+
+
 class Result(models.Model):
     heat = models.ForeignKey(Heat, on_delete=models.CASCADE)
-    lane = models.IntegerField()
+    lane = models.ForeignKey(Lane, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     time = models.DurationField(null=True)
