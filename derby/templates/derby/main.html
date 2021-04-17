@@ -3,8 +3,15 @@
 {% block content %}
 
 <H1><A HREF="register">Register Cars</A></H1>
-<H1><A HREF="start">Start Race</A></H1>
+<form action="start" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Start Race">
+</form>
 <H1><A HREF="audience">Audience</A></H1>
 <H1><A HREF="remainingHeats">Remaining Heats</A></H1>
 <H1><A HREF="allCars">All Cars</A></H1>
+
 {% endblock %}

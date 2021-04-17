@@ -1,9 +1,10 @@
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.http import HttpResponse
-from derby.forms import RegisterForm
+from derby.forms import RegisterForm, SelectGroupForm
 from derby.models import Car, Group
 from derby.generateHeats import generateHeats
+from derby.getTimes import getTimes
 
 
 def register(request):
@@ -29,7 +30,7 @@ def register(request):
 
 
 def main(request):
-    context = {}
+    context = {'form': SelectGroupForm()}
     return render(request, "derby/main.html", context)
 
 
@@ -50,8 +51,13 @@ def nextHeat(request):
 def audience(request):
     template = request.GET.get('next', 'derby/leaderboard.html')
 
+    # TODO: this needs to change to be real
+    group = Group.objects.get(name="Open")
+
     if template == 'derby/leaderboard.html':
-        context = {"timeout" : 5000, "audience" : True, "next" : "derby/nextHeat.html"}
+        context = {"timeout": 10000, "audience": True,
+                   "cars": getTimes(group),
+                   "next": "derby/nextHeat.html"}
     else:
         context = {}
 

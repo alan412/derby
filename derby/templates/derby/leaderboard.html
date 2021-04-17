@@ -2,11 +2,11 @@
 {% block title %}Leaderboard{% endblock %}
 {% block content %}
 {% if audience %}
-    <script>
-        var timer = setTimeout(function() {
-            window.location='/derby/audience?next={{next}}'
-        }, {{timeout}});
-    </script>
+<script>
+    var timer = setTimeout(function () {
+        window.location = '/derby/audience?next={{next}}'
+    }, {{ timeout }});
+</script>
 {% endif %}
 <h1 class="center-title">
     <u><b>Leaderboard</b></u>
@@ -20,23 +20,27 @@
         <th>Picture</th>
         <th>Speed</th>
     </tr>
-    {% for car in leaderboard %}
+    {% for carTime in cars %}
     <tr>
         <td>
             {{forloop.counter}}.
-        </td> 
-        <td>
-            {{car.name}}
         </td>
         <td>
-            {{car.owner}}
+            {{carTime.car.name}}
         </td>
-        <td>{% if car.picture %}
-            <img src="{{car.picture}}"  width="50" height="60">
+        <td>
+            {{carTime.car.owner}}
+        </td>
+        <td>{% if carTime.car.picture %}
+            <img src="/{{carTime.car.picture}}" width="50" height="60">
             {% endif %}
         </td>
         <td>
-            {{car.speed}}
+            {% if carTime.fastestTime %}
+            {{carTime.fastestTime.total_seconds }}
+            {% else %}
+            ---
+            {% endif %}
         </td>
     </tr>
     {% endfor %}
