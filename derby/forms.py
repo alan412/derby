@@ -9,6 +9,3 @@ class RegisterForm(ModelForm):
         labels = {
             'name': 'Car Name',
         }
-
-class SelectGroupForm(Form):
-    group = ModelChoiceField(queryset=Group.objects.all())

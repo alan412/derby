@@ -1,8 +1,5 @@
-import re
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from django.http import HttpResponse
-from derby.forms import RegisterForm, SelectGroupForm
+from derby.forms import RegisterForm
 from derby.models import Car, Group
 from derby.generateHeats import generateHeats
 from derby.getTimes import getTimes
