@@ -33,6 +33,7 @@ fieldset.group{
 .Leaderboard{
     margin-left: auto;
     margin-right: auto;
+    border-collapse:collapse;
 }
 
 table.Leaderboard th{

@@ -13,12 +13,12 @@
 </h1>
 
 <table class="Leaderboard">
-    <tr>
-        <th>Rank</th>
+    <tr class="header">
+        <th></th>
         <th>Name</th>
         <th>Owner</th>
         <th>Picture</th>
-        <th>Speed</th>
+        <th>Time</th>
     </tr>
     {% for carTime in cars %}
     <tr>
@@ -32,7 +32,7 @@
             {{carTime.car.owner}}
         </td>
         <td>{% if carTime.car.picture %}
-            <img src="/{{carTime.car.picture}}" width="50" height="60">
+            <img src="/{{carTime.car.picture}}" width="100">
             {% endif %}
         </td>
         <td>
