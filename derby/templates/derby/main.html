@@ -3,15 +3,19 @@
 {% block content %}
 
 <H1><A HREF="register">Register Cars</A></H1>
-<form action="start" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-    <input type="submit" value="Start Race">
-</form>
-<H1><A HREF="audience">Audience</A></H1>
-<H1><A HREF="remainingHeats">Remaining Heats</A></H1>
+
+{% for group in groups %}
+<fieldset class="group" style="border: 1px {{group.color}} solid;">
+   <legend>{{group.name}}</legend>
+   <UL>
+      <LI><A HREF="{{group.id}}/start/">Start</A></LI>
+      <LI><A HREF="{{group.id}}/audience/">Audience</A></LI>
+      <LI><A HREF="{{group.id}}/leaderboard/">Leaderboard</A></LI>
+      <LI><A HREF="{{group.id}}/remainingHeats/">Remaining Heats</A></LI>
+   </UL>
+</fieldset><br/>
+{% endfor %}
+
 <H1><A HREF="allCars">All Cars</A></H1>
 
 {% endblock %}

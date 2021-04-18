@@ -14,6 +14,11 @@ h1.LeaderboardTitle{
     text-shadow: 10px;
 }
 
+fieldset.group{
+    width: 80%;
+    margin:auto;
+}
+
 .column {
     float: left;
     width: 8%;

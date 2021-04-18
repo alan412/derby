@@ -35,7 +35,7 @@ def register(request):
 
 
 def main(request):
-    context = {'form': SelectGroupForm()}
+    context = {'groups': Group.objects.all()}
     return render(request, "derby/main.html", context)
 
 
