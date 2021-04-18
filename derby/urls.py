@@ -5,10 +5,10 @@ from . import views
 urlpatterns = [
     path('', views.main),
     path('register', views.register),
-    path('audience', views.audience),
     path('currentHeat', views.currentHeat),
-    path('leaderboard', views.leaderboard),
-    path('nextHeat', views.nextHeat),
     path('allCars', views.allCars),
-    path('start', views.start)
+    path('<int:groupId>/start/', views.start),
+    path('<int:groupId>/audience/', views.audience),
+    path('<int:groupId>/leaderboard/', views.leaderboard),
+    path('<int:groupId>/remaining/', views.remainingHeats),
 ]

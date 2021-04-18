@@ -9,6 +9,10 @@ div.settings label:after { content: ":"; }
 h1.center-title{
     text-align: center;
 }
+h1.LeaderboardTitle{
+    text-align: center;
+    text-shadow: 10px;
+}
 
 .column {
     float: left;
@@ -36,4 +40,6 @@ table.Leaderboard th{
 table.Leaderboard td{
     text-align: center;
     font-size: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
 }

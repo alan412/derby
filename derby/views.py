@@ -1,3 +1,4 @@
+import re
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -5,6 +6,10 @@ from derby.forms import RegisterForm, SelectGroupForm
 from derby.models import Car, Group
 from derby.generateHeats import generateHeats
 from derby.getTimes import getTimes
+
+
+def groupFromId(groupId):
+    return Group.objects.get(id=groupId)
 
 
 def register(request):
@@ -34,30 +39,18 @@ def main(request):
     return render(request, "derby/main.html", context)
 
 
-def start(request):
-    # needs to change to which group is being started
-    groups = Group.objects.all()
-    for group in groups:
-        generateHeats(group)
-    context = {}
-    return render(request, "derby/start.html", context)
+def start(request, groupId):
+    generateHeats(groupFromId(groupId))
+    return audience(request, groupId)
 
 
-def nextHeat(request):
-    context = {}
-    return render(request, "derby/nextHeat.html", context)
-
-
-def audience(request):
+def audience(request, groupId):
     template = request.GET.get('next', 'derby/leaderboard.html')
 
-    # TODO: this needs to change to be real
-    group = Group.objects.get(name="Open")
-
     if template == 'derby/leaderboard.html':
-        context = {"timeout": 10000, "audience": True,
-                   "cars": getTimes(group),
+        context = {"timeout": 10_000, "audience": True,
                    "next": "derby/nextHeat.html"}
+        return showLeaderboard(request, context, groupId)
     else:
         context = {}
 
@@ -69,7 +62,7 @@ def currentHeat(request):
     return render(request, "derby/currentHeat.html", context)
 
 
-def remainingHeats(request):
+def remainingHeats(request, group):
     # needs to be changed to be the color of the group
     context = {"color": "red"}
     return render(request, "derby/remaining.html", context)
@@ -80,20 +73,13 @@ def allCars(request):
     return render(request, "derby/allCars.html", context)
 
 
-def leaderboard(request):
-    listCars = [
-        {"owner": "DAD", "name": "slowpoke", "picture": "", "speed": "01:07.02"},
-        {"owner": "Joshua", "name": "Wabbit",
-            "picture": "Wabbit.jpg", "speed": "00:42.42"},
-        {"owner": "DAD", "name": "slowpoke", "picture": "", "speed": "01:03.02"},
-        {"owner": "Mom", "name": "Filthy Panda Stealer",
-            "picture": "", "speed": "00:43.02"},
-        {"owner": "Joshua", "name": "Wabbit",
-            "picture": "Wabbit.jpg", "speed": "00:49.42"},
-        {"owner": "DAD", "name": "slowpoke", "picture": "", "speed": "01:07.02"},
-        {"owner": "Mom", "name": "Filthy Panda Stealer",
-            "picture": "", "speed": "00:48.02"},
-    ]
-    context = {"leaderboard": sorted(
-        listCars, key=lambda car: car['speed'])[:5]}
+def showLeaderboard(request, context, groupId):
+    group = Group.objects.get(id=groupId)
+    context["cars"] = getTimes(group)
+    context["group"] = group
     return render(request, "derby/leaderboard.html", context)
+
+
+def leaderboard(request, groupId):
+    context = {}
+    return showLeaderboard(request, context, groupId)
