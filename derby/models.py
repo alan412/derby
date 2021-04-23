@@ -1,5 +1,9 @@
+import sys
 from django.db import models
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from colorfield.fields import ColorField
+from PIL import Image
+from io import BytesIO
 
 
 class Group(models.Model):
@@ -30,6 +34,19 @@ class Car(models.Model):
             self.number = 1
         else:
             self.number = lastCar.number + 1
+
+    def resizeImage(self, origImage):
+        tmpImage = Image.open(origImage).resize((500, 500))
+        outputIoStream = BytesIO()
+        tmpImage.save(outputIoStream, format='JPEG', quality=60)
+        outputIoStream.seek(0)
+        return InMemoryUploadedFile(outputIoStream, 'ImageField', "%s.jpg" % tmpImage.name.split('.')[
+            0], 'image/jpeg', sys.getsizeof(outputIoStream), None)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.picture = self.resizeImage(self.picture)
+        super(Car, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"Car: {self.name} - {self.group} ({self.number})"
