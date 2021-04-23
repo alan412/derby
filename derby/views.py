@@ -3,6 +3,7 @@ from derby.forms import RegisterForm
 from derby.models import Car, Group
 from derby.generateHeats import generateHeats
 from derby.getTimes import getTimes
+from derby.hardware import hardware
 
 
 def groupFromId(groupId):
@@ -34,6 +35,16 @@ def register(request):
 def main(request):
     context = {'groups': Group.objects.all()}
     return render(request, "derby/main.html", context)
+
+
+def testHardware(request):
+    hardware.update()
+    lanes = []
+    for i in range(1, 7):
+        lanes.append({'number': i, "status": hardware.lane[i]})
+
+    context = {'lanes': lanes, "startSwitchClosed": hardware.startSwitchClosed}
+    return render(request, "derby/testHardware.html", context)
 
 
 def start(request, groupId):

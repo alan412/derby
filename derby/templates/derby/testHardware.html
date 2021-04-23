@@ -1,0 +1,19 @@
+{% extends "derby/base.html" %}
+
+{% block title %}Derby Test Hardware{% endblock %}
+{% block content %}
+<script>
+    var timer = setTimeout(function () {
+        location.reload(true)
+    }, 250);
+</script>
+<br/>
+<TABLE class="Leaderboard">
+<TR><TH>Lane</TH><TH>Status</TH></TR>
+{% for lane in lanes %}
+  <TR><TD>{{lane.number}}</TD><TD>{{lane.status}}</TD></TR>
+{% endfor %}
+</TABLE>
+<H2>Start Switch: {{startSwitchClosed}}</H2>
+
+{% endblock %}

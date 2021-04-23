@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.main),
     path('register', views.register),
+    path('test', views.testHardware),
     path('currentHeat', views.currentHeat),
     path('allCars', views.allCars),
     path('<int:groupId>/start/', views.start),
