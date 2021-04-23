@@ -55,13 +55,12 @@ class Hardware:
 
 
 hardware = Hardware()
+currentHeat = 0
 
 
 class RaceTimerThread(Thread):
     def __init__(self):
-        self.hw = Hardware()
         self.laneTimes = {}
-        self.currentHeat = 0
 
     def setLane(self, laneNum, elapsedTime):
         if laneNum not in self.laneTimes:
@@ -70,21 +69,21 @@ class RaceTimerThread(Thread):
     def runRace(self):
         self.laneTimes = {}
         # wait for start switch to open
-        while self.hw.startSwitchClosed:
-            self.hw.update()
+        while hardware.startSwitchClosed:
+            hardware.update()
         startTime = time.time_ns()
         time.sleep(.5)   # give switch time to settle
         while not self.hw.startSwitchClosed:
-            self.hw.update()
+            hardware.update()
             elapsedTimeMs = (time.time_ns() - startTime) / 1_000
             for i in range(1, 7):
-                if self.hw.lane[i]:
+                if hardware.lane[i]:
                     self.setLane(i, elapsedTimeMs)
 
     def run(self):
         self.runRace()
         if self.currentHeat:
-            heat = Heat.objects.get(id=self.currentHeat)
+            heat = Heat.objects.get(id=currentHeat)
             results = Result.objects.filter(heat=heat)
             for result in results:
                 laneNum = result.lane.number
@@ -94,9 +93,4 @@ class RaceTimerThread(Thread):
                     result.save()
             heat.finished = True
             heat.save()
-        self.currentHeat = 0
-
-
-# class DerbyConfig(AppConfig):
-#
-#    def ready(self):
+        currentHeat = 0

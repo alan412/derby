@@ -1,0 +1,7 @@
+<TABLE class="Leaderboard">
+<TR><TH>Lane</TH><TH>Status</TH></TR>
+{% for lane in lanes %}
+  <TR><TD>{{lane.number}}</TD><TD>{{lane.status}}</TD></TR>
+{% endfor %}
+</TABLE>
+<H2>Start Switch: {{startSwitchClosed}}</H2>

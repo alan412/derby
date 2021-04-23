@@ -38,13 +38,19 @@ def main(request):
 
 
 def testHardware(request):
+    context = {'interval': 200}
+    return render(request, "derby/testHardware.html", context)
+
+
+def updateHardware(request):
     hardware.update()
     lanes = []
     for i in range(1, 7):
         lanes.append({'number': i, "status": hardware.lane[i]})
 
-    context = {'lanes': lanes, "startSwitchClosed": hardware.startSwitchClosed}
-    return render(request, "derby/testHardware.html", context)
+    context = {'lanes': lanes,
+               "startSwitchClosed": hardware.startSwitchClosed}
+    return render(request, "derby/hwTable.html", context)
 
 
 def start(request, groupId):
