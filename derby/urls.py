@@ -7,7 +7,6 @@ urlpatterns = [
     path('register', views.register),
     path('test', views.testHardware),
     path('updateHardware', views.updateHardware),
-    path('currentHeat', views.currentHeat),
     path('allCars', views.allCars),
     path('<int:groupId>/start/', views.start),
     path('<int:groupId>/audience/', views.audience),

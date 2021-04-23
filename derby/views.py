@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from derby.forms import RegisterForm
-from derby.models import Car, Group
+from derby.models import Car, Group, Heat, Result
 from derby.generateHeats import generateHeats
 from derby.getTimes import getTimes
 from derby.hardware import hardware
+
+currentHeat = None
 
 
 def groupFromId(groupId):
@@ -54,26 +56,41 @@ def updateHardware(request):
 
 
 def start(request, groupId):
-    generateHeats(groupFromId(groupId))
+    global currentHeat
+    group = groupFromId(groupId)
+    generateHeats(group)
+    # sets global
+    try:
+        currentHeat = Heat.objects.get(group=group, number=1)
+    except Heat.DoesNotExist:
+        currentHeat = None
+
     return audience(request, groupId)
 
 
 def audience(request, groupId):
-    template = request.GET.get('next', 'derby/leaderboard.html')
+    global currentHeat
+    template = request.GET.get('next', 'derby/currentHeat.html')
 
     if template == 'derby/leaderboard.html':
         context = {"timeout": 10_000, "audience": True,
-                   "next": "derby/nextHeat.html"}
+                   "next": "derby/currentHeat.html"}
         return showLeaderboard(request, context, groupId)
+    elif template == 'derby/currentHeat.html':
+        group = groupFromId(groupId)
+        context = {"timeout": 5_000, "audience": True,
+                   "heat": currentHeat,
+                   "totalHeats": Heat.objects.filter(group=group).count(),
+                   "next": "derby/leaderboard.html"}
+        if currentHeat:
+            results = Result.objects.filter(heat=currentHeat)
+            context["results"] = results
+        else:
+            return redirect('/')
     else:
         context = {}
 
     return render(request, template, context)
-
-
-def currentHeat(request):
-    context = {}
-    return render(request, "derby/currentHeat.html", context)
 
 
 def remainingHeats(request, group):
