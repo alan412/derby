@@ -61,7 +61,8 @@ def start(request, groupId):
     generateHeats(group)
     # sets global
     try:
-        currentHeat = Heat.objects.get(group=group, number=1)
+        currentHeat = Heat.objects.filter(
+            group=group, finished=False).order_by('number').first()
     except Heat.DoesNotExist:
         currentHeat = None
 
