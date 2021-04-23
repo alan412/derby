@@ -40,25 +40,18 @@ class Hardware:
     SWITCH_IN = 31
 
     def __init__(self):
-
         GPIO.setmode(GPIO.BOARD)
         self.lanes = [self.LANE_1, self.LANE_2, self.LANE_3,
                       self.LANE_4, self.LANE_5, self.LANE_6]
         GPIO.setup(self.lanes, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.SWITCH_IN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.lane = {}
-        self.lane[1] = False
-        self.lane[2] = False
-        self.lane[3] = False
-        self.lane[4] = True
-        self.lane[5] = False
-        self.lane[6] = True
-        self.startSwitchClosed = False
+        self.update()
 
     def update(self):
         for i in range(1, 7):
-            self.lane[i] = GPIO.input(self.lanes[i-1])
-        self.startSwitchClosed = GPIO.input(self.SWITCH_IN)
+            self.lane[i] = True if GPIO.input(self.lanes[i-1]) else False
+        self.startSwitchClosed = True if GPIO.input(self.SWITCH_IN) else False
 
 
 hardware = Hardware()
