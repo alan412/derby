@@ -1,3 +1,4 @@
+from django.db.models.fields.files import ImageFieldFile
 import sys
 from django.db import models
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -35,17 +36,26 @@ class Car(models.Model):
         else:
             self.number = lastCar.number + 1
 
-    def resizeImage(self, origImage):
-        tmpImage = Image.open(origImage).resize((500, 500))
-        outputIoStream = BytesIO()
-        tmpImage.save(outputIoStream, format='JPEG', quality=60)
-        outputIoStream.seek(0)
-        return InMemoryUploadedFile(outputIoStream, 'ImageField', "%s.jpg" % tmpImage.name.split('.')[
-            0], 'image/jpeg', sys.getsizeof(outputIoStream), None)
+    def resizeImage(self, image_field: ImageFieldFile, size: tuple):
+        image = Image.open(image_field.file.file)
+        image.thumbnail(size=size)
+        image_file = BytesIO()
+        image.save(image_file, image.format)
+        image_field.save(
+            image_field.name,
+            InMemoryUploadedFile(
+                image_file,
+                None, '',
+                image_field.file.content_type,
+                image.size,
+                image_field.file.charset,
+            ),
+            save=False
+        )
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.picture = self.resizeImage(self.picture)
+            self.resizeImage(self.picture, (500, 500))
         super(Car, self).save(*args, **kwargs)
 
     def __str__(self):
