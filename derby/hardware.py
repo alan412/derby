@@ -2,7 +2,7 @@ import time
 from django.apps import AppConfig
 from derby.models import Result, Heat
 from threading import Thread
-from time import time, time_ns
+from time import time, sleep, time_ns
 
 
 class FakeGPIO:
@@ -79,7 +79,7 @@ class RaceTimerThread(Thread):
         while hardware.startSwitchClosed:
             hardware.update()
         self.startTime = time_ns()
-        time.sleep(.5)   # give switch time to settle
+        sleep(.5)   # give switch time to settle
         while not self.hw.startSwitchClosed:
             hardware.update()
             elapsedTimeMs = self.getElapsedTime()
