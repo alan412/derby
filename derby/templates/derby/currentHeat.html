@@ -1,6 +1,33 @@
 {% extends "derby/base.html" %}
 {% block title %}Current Heat{% endblock %}
 {% block content %}
+<script>
+function stringFromTimeMs(timeMilliseconds){
+    return (timeMilliseconds / 1000).toFixed(2)
+}
+function placeTime(where, timeMilliseconds){
+    if (isNaN(timeMilliseconds))
+       return; 
+    $(where).html(stringFromTimeMs(timeMilliseconds))
+}
+
+ var timer = setInterval(function () {
+    $.ajax({dataType: "json", url: "/derby/heatData"}).done(function( data ) {
+        displayTime = "Time:" + stringFromTimeMs(data.time);
+        $( "h3.time").replaceWith( displayTime);
+        {% for result in results %}
+            placeTime("td.time#{{result.lane.number}}", data["{{result.lane.number}}"])
+        {% endfor %}
+        if (data.finished){
+            clearInterval(timer)
+            setTimeout(function () {
+                window.location = '/derby/{{ heat.group.id }}/audience/?next={{next}}'
+            }, {{ timeout }});
+        }
+  })        
+    }, {{ interval }});
+</script>
+
 <center>
 <H1>Heat {{heat.number}} of {{totalHeats}}</H1>
 <H2>{{heat.group.name}}</H2>

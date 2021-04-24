@@ -4,7 +4,7 @@
 {% if audience %}
 <script>
     var timer = setTimeout(function () {
-        window.location = '/derby/audience?next={{next}}'
+        window.location = '/derby/{{ group.id }}/audience/?next={{next}}'
     }, {{ timeout }});
 </script>
 {% endif %}

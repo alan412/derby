@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from derby.forms import RegisterForm
 from derby.models import Car, Group, Heat, Result
@@ -10,6 +11,12 @@ currentHeat = None
 
 def groupFromId(groupId):
     return Group.objects.get(id=groupId)
+
+
+def heatData(request):
+    data = {'time': 12_300, '1': 4_000,
+            '2': 3_400, '3': 4_200, 'finished': True}
+    return JsonResponse(data)
 
 
 def register(request):
@@ -82,6 +89,7 @@ def audience(request, groupId):
         context = {"timeout": 5_000, "audience": True,
                    "heat": currentHeat,
                    "totalHeats": Heat.objects.filter(group=group).count(),
+                   "interval": 250,
                    "next": "derby/leaderboard.html"}
         if currentHeat:
             results = Result.objects.filter(heat=currentHeat)
