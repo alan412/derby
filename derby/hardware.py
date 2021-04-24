@@ -80,7 +80,7 @@ class RaceTimerThread(Thread):
             hardware.update()
         self.startTime = time_ns()
         sleep(.5)   # give switch time to settle
-        while not self.hw.startSwitchClosed:
+        while not hardware.startSwitchClosed:
             hardware.update()
             elapsedTimeMs = self.getElapsedTime()
             for i in range(1, 7):
