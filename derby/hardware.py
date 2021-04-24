@@ -51,7 +51,8 @@ class Hardware:
     def update(self):
         for i in range(1, 7):
             self.lane[i] = True if GPIO.input(self.lanes[i-1]) else False
-        self.startSwitchClosed = False if GPIO.input(self.SWITCH_IN) else True
+        # self.startSwitchClosed = False if GPIO.input(self.SWITCH_IN) else True
+        self.startSwitchClosed = True if GPIO.input(self.SWITCH_IN) else False
 
 
 hardware = Hardware()
