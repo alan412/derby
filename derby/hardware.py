@@ -74,8 +74,7 @@ class RaceTimerThread(Thread):
 
     def run(self):
         self.laneTimes = {}
-        self.startTime = time_ns()
-        print("self.startTime 78", self.startTime)
+        self.startTime = 0
         # wait for start switch to open
         while hardware.startSwitchClosed:
             hardware.update()
