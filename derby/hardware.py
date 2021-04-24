@@ -2,7 +2,7 @@ import time
 from django.apps import AppConfig
 from derby.models import Result, Heat
 from threading import Thread
-from time import time
+from time import time, time_ns
 
 
 class FakeGPIO:
@@ -59,38 +59,46 @@ currentHeat = 0
 
 
 class RaceTimerThread(Thread):
-    def __init__(self):
+    def __init__(self, group=None, target=None, name=None):
         self.laneTimes = {}
+        self.startTime = 0
+        super(RaceTimerThread, self).__init__(
+            group=group, target=target, name=name)
+
+    def getElapsedTime(self):
+        return (time_ns() - self.startTime) / 1_000_000
 
     def setLane(self, laneNum, elapsedTime):
         if laneNum not in self.laneTimes:
             self.laneTimes[laneNum] = elapsedTime
 
-    def runRace(self):
+    def run(self):
         self.laneTimes = {}
+        self.startTime = time_ns()
+        print("self.startTime 78", self.startTime)
         # wait for start switch to open
         while hardware.startSwitchClosed:
             hardware.update()
-        startTime = time.time_ns()
+        self.startTime = time_ns()
         time.sleep(.5)   # give switch time to settle
         while not self.hw.startSwitchClosed:
             hardware.update()
-            elapsedTimeMs = (time.time_ns() - startTime) / 1_000
+            elapsedTimeMs = self.getElapsedTime()
             for i in range(1, 7):
                 if hardware.lane[i]:
                     self.setLane(i, elapsedTimeMs)
 
-    def run(self):
-        self.runRace()
-        if self.currentHeat:
-            heat = Heat.objects.get(id=currentHeat)
-            results = Result.objects.filter(heat=heat)
-            for result in results:
-                laneNum = result.lane.number
-                if result.self.laneTimes[laneNum]:
-                    result.time = time.timedelta(
-                        milliseconds=result.self.laneTimes[laneNum])
-                    result.save()
-            heat.finished = True
-            heat.save()
-        currentHeat = 0
+    # def run(self):
+    #     self.runRace()
+        # if self.currentHeat:
+        #     heat = Heat.objects.get(id=currentHeat)
+        #     results = Result.objects.filter(heat=heat)
+        #     for result in results:
+        #         laneNum = result.lane.number
+        #         if result.self.laneTimes[laneNum]:
+        #             result.time = time.timedelta(
+        #                 milliseconds=result.self.laneTimes[laneNum])
+        #             result.save()
+        #     heat.finished = True
+        #     heat.save()
+        # currentHeat = 0

@@ -4,7 +4,7 @@ from derby.forms import RegisterForm
 from derby.models import Car, Group, Heat, Result
 from derby.generateHeats import generateHeats
 from derby.getTimes import getTimes
-from derby.hardware import hardware
+from derby.hardware import hardware, RaceTimerThread
 
 currentHeat = None
 
@@ -13,9 +13,19 @@ def groupFromId(groupId):
     return Group.objects.get(id=groupId)
 
 
+hwThread = None
+
+
 def heatData(request):
-    data = {'time': 12_300, '1': 4_000,
-            '2': 3_400, '3': 4_200, 'finished': True}
+    global hwThread
+
+    data = {'finished': not hwThread.is_alive()}
+    if hwThread.startTime:
+        data['time'] = hwThread.getElapsedTime()
+    for lane in range(1, 7):
+        if lane in hwThread.laneTimes:
+            data[str(lane)] = hwThread.laneTimes[lane]
+
     return JsonResponse(data)
 
 
@@ -62,14 +72,28 @@ def updateHardware(request):
     return render(request, "derby/hwTable.html", context)
 
 
+def background_process():
+    import time
+    print("process started")
+    time.sleep(10)
+    print("process finished")
+
+
 def start(request, groupId):
     global currentHeat
+    global hwThread
     group = groupFromId(groupId)
     generateHeats(group)
     # sets global
     try:
         currentHeat = Heat.objects.filter(
             group=group, finished=False).order_by('number').first()
+        if not hwThread:
+            hwThread = RaceTimerThread()
+            hwThread.setDaemon(True)
+        print("About to start")
+        hwThread.start()
+        print("starting")
     except Heat.DoesNotExist:
         currentHeat = None
 
