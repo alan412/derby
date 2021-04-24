@@ -5,6 +5,7 @@ from derby.models import Car, Group, Heat, Result
 from derby.generateHeats import generateHeats
 from derby.getTimes import getTimes
 from derby.hardware import hardware, RaceTimerThread
+from time import sleep
 
 currentHeat = None
 
@@ -25,6 +26,9 @@ def heatData(request):
     for lane in range(1, 7):
         if lane in hwThread.laneTimes:
             data[str(lane)] = hwThread.laneTimes[lane]
+
+    if data['finished']:
+        hwThread.saveHeat(currentHeat)
 
     return JsonResponse(data)
 
@@ -90,10 +94,13 @@ def start(request, groupId):
             group=group, finished=False).order_by('number').first()
         if not hwThread:
             hwThread = RaceTimerThread()
-            hwThread.setDaemon(True)
-        print("About to start")
+        else:
+            if not hwThread.done:
+                hwThread.done = True
+                while hwThread.isAlive():
+                    sleep(.1)
+
         hwThread.start()
-        print("starting")
     except Heat.DoesNotExist:
         currentHeat = None
 

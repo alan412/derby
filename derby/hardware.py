@@ -1,8 +1,7 @@
-import time
 from django.apps import AppConfig
 from derby.models import Result, Heat
 from threading import Thread
-from time import time, sleep, time_ns
+from time import sleep, time_ns, time
 
 
 class FakeGPIO:
@@ -63,6 +62,7 @@ class RaceTimerThread(Thread):
     def __init__(self, group=None, target=None, name=None):
         self.laneTimes = {}
         self.startTime = 0
+        self.done = True
         super(RaceTimerThread, self).__init__(
             group=group, target=target, name=name)
 
@@ -76,29 +76,28 @@ class RaceTimerThread(Thread):
     def run(self):
         self.laneTimes = {}
         self.startTime = 0
+        self.done = False
         # wait for start switch to open
         while hardware.startSwitchClosed:
             hardware.update()
         self.startTime = time_ns()
         sleep(.5)   # give switch time to settle
-        while not hardware.startSwitchClosed:
+        while not self.done:
             hardware.update()
             elapsedTimeMs = self.getElapsedTime()
             for i in range(1, 7):
                 if hardware.lane[i]:
                     self.setLane(i, elapsedTimeMs)
+            if hardware.startSwitchClosed:
+                self.done = True
 
-    # def run(self):
-    #     self.runRace()
-        # if self.currentHeat:
-        #     heat = Heat.objects.get(id=currentHeat)
-        #     results = Result.objects.filter(heat=heat)
-        #     for result in results:
-        #         laneNum = result.lane.number
-        #         if result.self.laneTimes[laneNum]:
-        #             result.time = time.timedelta(
-        #                 milliseconds=result.self.laneTimes[laneNum])
-        #             result.save()
-        #     heat.finished = True
-        #     heat.save()
-        # currentHeat = 0
+    def saveHeat(self, heat):
+        results = Result.objects.filter(heat=heat)
+        for result in results:
+            laneNum = result.lane.number
+            if self.laneTimes[laneNum]:
+                result.time = time.timedelta(
+                    milliseconds=result.self.laneTimes[laneNum])
+                result.save()
+        heat.finished = True
+        heat.save()
