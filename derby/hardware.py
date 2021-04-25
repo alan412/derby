@@ -79,9 +79,11 @@ class RaceTimerThread(Thread):
         self.startTime = 0
         self.done = False
         # wait for start switch to open
-        hardware.update()
-        while hardware.startSwitchClosed:
+        while True:
             hardware.update()
+            if not hardware.startSwitchClosed:
+                break
+
         self.startTime = time_ns()
         sleep(.5)   # give switch time to settle
         while not self.done:
