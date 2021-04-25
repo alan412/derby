@@ -57,6 +57,7 @@ class Hardware:
 
 hardware = Hardware()
 
+
 class RaceTimerThread(Thread):
     def __init__(self, group=None, target=None, name=None):
         self.laneTimes = {}
@@ -76,6 +77,7 @@ class RaceTimerThread(Thread):
         self.laneTimes = {}
         self.startTime = 0
         self.done = False
+        sleep(.5)  # give switch time to settle
         # wait for start switch to open
         while True:
             hardware.update()
