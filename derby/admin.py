@@ -6,7 +6,7 @@ from .models import Group, Car, Heat, Result, Lane
 
 @admin.register(Heat)
 class HeatAdmin(admin.ModelAdmin):
-    list_display = ('group', 'number')
+    list_display = ('group', 'number', 'finished')
 
 
 @admin.register(Result)
