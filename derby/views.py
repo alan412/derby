@@ -24,6 +24,9 @@ def heatData(request):
     data = {'finished': not hwThread.is_alive()}
     if hwThread.startTime:
         data['time'] = hwThread.getElapsedTime()
+    else:
+        data['time'] = 0
+
     for lane in range(1, 7):
         if lane in hwThread.laneTimes:
             data[str(lane)] = hwThread.laneTimes[lane]
@@ -32,6 +35,7 @@ def heatData(request):
         hwThread.saveHeat(currentHeat)
         currentHeat = Heat.objects.filter(
             group=currentHeat.group, finished=False).order_by('number').first()
+        hwThread.start()
 
     return JsonResponse(data)
 
