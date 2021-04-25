@@ -37,9 +37,11 @@ def heatData(request):
             data[str(lane)] = hwThread.laneTimes[lane]
 
     if data['finished']:
-        hwThread.saveHeat(currentHeat)
-        currentHeat = getNextHeat(currentHeat.group)
-        hwThread.start()
+        if currentHeat:
+            hwThread.saveHeat(currentHeat)
+            currentHeat = getNextHeat(currentHeat.group)
+            if currentHeat:
+                hwThread.start()
 
     return JsonResponse(data)
 
