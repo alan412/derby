@@ -101,7 +101,7 @@ class RaceTimerThread(Thread):
             laneNum = result.lane.number
             if laneNum in self.laneTimes:
                 result.time = timedelta(
-                    milliseconds=result.self.laneTimes[laneNum])
+                    milliseconds=self.laneTimes[laneNum])
                 result.save()
         heat.finished = True
         heat.save()
