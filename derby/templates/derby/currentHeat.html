@@ -14,12 +14,16 @@ function placeTime(where, timeMilliseconds){
  var timer = setInterval(function () {
     $.ajax({dataType: "json", url: "/derby/heatData"}).done(function( data ) {
         displayTime = "Time:" + stringFromTimeMs(data.time);
+        if(data.time == 0){
+            displayTime = "Not Started"
+        }
         $( "h3.time").html( displayTime);
         {% for result in results %}
             placeTime("td.time#{{result.lane.number}}", data["{{result.lane.number}}"])
         {% endfor %}
         if (data.finished){
             clearInterval(timer)
+            $( "h3.time").html( "Finished" );
             setTimeout(function () {
                 window.location = '/derby/{{ heat.group.id }}/audience/?next={{next}}'
             }, {{ timeout }});

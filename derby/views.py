@@ -5,6 +5,7 @@ from derby.models import Car, Group, Heat, Result
 from derby.generateHeats import generateHeats
 from derby.getTimes import getTimes
 from derby.hardware import hardware, RaceTimerThread
+from time import sleep
 
 currentHeat = None
 
@@ -16,15 +17,31 @@ def groupFromId(groupId):
 hwThread = None
 
 
+def getNextHeat(group):
+    return Heat.objects.filter(
+        group=group, finished=False).order_by('number').first()
+
+
 def heatData(request):
     global hwThread
+    global currentHeat
 
     data = {'finished': not hwThread.is_alive()}
     if hwThread.startTime:
         data['time'] = hwThread.getElapsedTime()
+    else:
+        data['time'] = 0
+
     for lane in range(1, 7):
         if lane in hwThread.laneTimes:
             data[str(lane)] = hwThread.laneTimes[lane]
+
+    if data['finished']:
+        if currentHeat:
+            hwThread.saveHeat(currentHeat)
+            currentHeat = getNextHeat(currentHeat.group)
+            if currentHeat:
+                hwThread.start()
 
     return JsonResponse(data)
 
@@ -72,13 +89,6 @@ def updateHardware(request):
     return render(request, "derby/hwTable.html", context)
 
 
-def background_process():
-    import time
-    print("process started")
-    time.sleep(10)
-    print("process finished")
-
-
 def start(request, groupId):
     global currentHeat
     global hwThread
@@ -86,14 +96,16 @@ def start(request, groupId):
     generateHeats(group)
     # sets global
     try:
-        currentHeat = Heat.objects.filter(
-            group=group, finished=False).order_by('number').first()
+        currentHeat = getNextHeat(group)
         if not hwThread:
             hwThread = RaceTimerThread()
-            hwThread.setDaemon(True)
-        print("About to start")
+        else:
+            if not hwThread.done:
+                hwThread.done = True
+                while hwThread.isAlive():
+                    sleep(.1)
+
         hwThread.start()
-        print("starting")
     except Heat.DoesNotExist:
         currentHeat = None
 
