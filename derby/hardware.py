@@ -1,7 +1,8 @@
 from django.apps import AppConfig
 from derby.models import Result, Heat
 from threading import Thread
-from time import sleep, time_ns, time
+from time import sleep, time_ns
+from datetime import timedelta
 
 
 class FakeGPIO:
@@ -96,7 +97,7 @@ class RaceTimerThread(Thread):
         for result in results:
             laneNum = result.lane.number
             if self.laneTimes[laneNum]:
-                result.time = time.timedelta(
+                result.time = timedelta(
                     milliseconds=result.self.laneTimes[laneNum])
                 result.save()
         heat.finished = True
