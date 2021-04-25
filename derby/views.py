@@ -19,6 +19,7 @@ hwThread = None
 
 def heatData(request):
     global hwThread
+    global currentHeat
 
     data = {'finished': not hwThread.is_alive()}
     if hwThread.startTime:
@@ -29,6 +30,8 @@ def heatData(request):
 
     if data['finished']:
         hwThread.saveHeat(currentHeat)
+        currentHeat = Heat.objects.filter(
+            group=currentHeat.group, finished=False).order_by('number').first()
 
     return JsonResponse(data)
 

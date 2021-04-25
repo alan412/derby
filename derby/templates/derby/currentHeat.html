@@ -20,6 +20,7 @@ function placeTime(where, timeMilliseconds){
         {% endfor %}
         if (data.finished){
             clearInterval(timer)
+            $( "h3.time").html( "Finished" );
             setTimeout(function () {
                 window.location = '/derby/{{ heat.group.id }}/audience/?next={{next}}'
             }, {{ timeout }});
