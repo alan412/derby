@@ -96,7 +96,7 @@ class RaceTimerThread(Thread):
         results = Result.objects.filter(heat=heat)
         for result in results:
             laneNum = result.lane.number
-            if self.laneTimes[laneNum]:
+            if laneNum in self.laneTimes:
                 result.time = timedelta(
                     milliseconds=result.self.laneTimes[laneNum])
                 result.save()
