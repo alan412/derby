@@ -96,12 +96,16 @@ class RaceTimerThread(Thread):
                 self.done = True
 
     def saveHeat(self, heat):
-        results = Result.objects.filter(heat=heat)
-        for result in results:
-            laneNum = result.lane.number
-            if laneNum in self.laneTimes:
-                result.time = timedelta(
-                    milliseconds=self.laneTimes[laneNum])
-                result.save()
-        heat.finished = True
-        heat.save()
+        if heat:
+            results = Result.objects.filter(heat=heat)
+            for result in results:
+                laneNum = result.lane.number
+                if laneNum in self.laneTimes:
+                    result.time = timedelta(
+                        milliseconds=self.laneTimes[laneNum])
+                    result.save()
+            heat.finished = True
+            heat.save()
+        self.laneTimes = {}
+        self.startTime = 0
+        self.done = True
