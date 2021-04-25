@@ -38,9 +38,10 @@ function placeTime(where, timeMilliseconds){
 <H3 class="time">Not Started</H3>
 </center>
 <table class="Leaderboard">
-<tr><th>Lane</th><th>Time</th><th>Name</th><th>Owner</th><th>Picture</th></tr>
+<tr><th>Lane</th><th></th><th>Time</th><th>Name</th><th>Owner</th><th>Picture</th></tr>
  {% for result in results %}
 <tr><td>{{result.lane.number}}</td>
+    <td></td>
     <td class="time" id="{{result.lane.number}}">---</td>
     <td>{{result.car.name}}</td>
     <td>{{result.car.owner}}</td>
