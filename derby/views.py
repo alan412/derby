@@ -18,8 +18,10 @@ hwThread = None
 
 
 def getNextHeat(group):
-    return Heat.objects.filter(
+    nextHeat = Heat.objects.filter(
         group=group, finished=False).order_by('number').first()
+    print("---Next Heat", nextHeat)
+    return nextHeat
 
 
 def heatData(request):
