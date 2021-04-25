@@ -17,6 +17,11 @@ def groupFromId(groupId):
 hwThread = None
 
 
+def getNextHeat(group):
+    return Heat.objects.filter(
+        group=group, finished=False).order_by('number').first()
+
+
 def heatData(request):
     global hwThread
     global currentHeat
@@ -33,8 +38,7 @@ def heatData(request):
 
     if data['finished']:
         hwThread.saveHeat(currentHeat)
-        currentHeat = Heat.objects.filter(
-            group=currentHeat.group, finished=False).order_by('number').first()
+        currentHeat = getNextHeat(currentHeat.group)
         hwThread.start()
 
     return JsonResponse(data)
@@ -83,13 +87,6 @@ def updateHardware(request):
     return render(request, "derby/hwTable.html", context)
 
 
-def background_process():
-    import time
-    print("process started")
-    time.sleep(10)
-    print("process finished")
-
-
 def start(request, groupId):
     global currentHeat
     global hwThread
@@ -97,8 +94,7 @@ def start(request, groupId):
     generateHeats(group)
     # sets global
     try:
-        currentHeat = Heat.objects.filter(
-            group=group, finished=False).order_by('number').first()
+        currentHeat = getNextHeat(group)
         if not hwThread:
             hwThread = RaceTimerThread()
         else:

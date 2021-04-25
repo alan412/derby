@@ -56,8 +56,6 @@ class Hardware:
 
 
 hardware = Hardware()
-currentHeat = 0
-
 
 class RaceTimerThread(Thread):
     def __init__(self, group=None, target=None, name=None):
