@@ -32,12 +32,12 @@
             {{carTime.car.owner}}
         </td>
         <td>{% if carTime.car.picture %}
-            <img src="/{{carTime.car.picture}}" width="100">
+            <img src="/{{carTime.car.picture}}" height="100">
             {% endif %}
         </td>
         <td>
             {% if carTime.fastestTime %}
-            {{carTime.fastestTime.total_seconds }}
+            {{carTime.fastestTime.total_seconds|stringformat:".2f" }}
             {% else %}
             ---
             {% endif %}
