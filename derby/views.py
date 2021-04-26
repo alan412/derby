@@ -1,4 +1,4 @@
-from django.http.response import JsonResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from derby.forms import RegisterForm
 from derby.models import Car, Group, Heat, Result
@@ -112,6 +112,19 @@ def start(request, groupId):
         currentHeat = None
 
     return audience(request, groupId)
+
+
+def fake(request):
+    global hardware
+    print(request.GET)
+    hardware.setValue(hardware.SWITCH_IN, request.GET.get('sw', 0))
+    hardware.setValue(hardware.LANE_1, request.GET.get('1', 0))
+    hardware.setValue(hardware.LANE_2, request.GET.get('2', 0))
+    hardware.setValue(hardware.LANE_3, request.GET.get('3', 0))
+    hardware.setValue(hardware.LANE_4, request.GET.get('4', 0))
+    hardware.setValue(hardware.LANE_5, request.GET.get('5', 0))
+    hardware.setValue(hardware.LANE_6, request.GET.get('6', 0))
+    return HttpResponse("Fake Hardware set")
 
 
 def audience(request, groupId):

@@ -12,6 +12,10 @@ class FakeGPIO:
 
     def __init__(self):
         print("!!!! NO GPIO")
+        self.pins = {}
+
+    def setPin(self, pin, value):
+        self.pins[pin] = value
 
     def setmode(self, *args, **kwargs):
         pass
@@ -19,23 +23,27 @@ class FakeGPIO:
     def setup(self, *args, **kwargs):
         pass
 
-    def input(self, *args, **kwargs):
-        return False
+    def input(self, pin):
+        if pin not in self.pins:
+            return False
+        return self.pins[pin]
 
 
+fakeHardware = False
 try:
     import RPi.GPIO as GPIO
 except:
     GPIO = FakeGPIO()
+    fakeHardware = True
 
 
 class Hardware:
-    LANE_1 = 33
-    LANE_2 = 35
-    LANE_3 = 37
-    LANE_4 = 36
-    LANE_5 = 38
-    LANE_6 = 40
+    LANE_6 = 33
+    LANE_5 = 35
+    LANE_4 = 37
+    LANE_3 = 36
+    LANE_2 = 38
+    LANE_1 = 40
 
     SWITCH_IN = 31
 
@@ -47,6 +55,12 @@ class Hardware:
         GPIO.setup(self.SWITCH_IN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.lane = {}
         self.update()
+
+    def setValue(self, pin, value):
+        if fakeHardware:
+            GPIO.setPin(pin, True if value else False)
+        else:
+            print("CAN'T FAKE REAL HARDWARE!!!")
 
     def update(self):
         for i in range(1, 7):
