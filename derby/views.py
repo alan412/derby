@@ -43,6 +43,7 @@ def heatData(request):
             hwThread.saveHeat(currentHeat)
             currentHeat = getNextHeat(currentHeat.group)
             if currentHeat:
+                hwThread = RaceTimerThread()
                 hwThread.start()
 
     return JsonResponse(data)
@@ -106,6 +107,7 @@ def start(request, groupId):
                 hwThread.done = True
                 while hwThread.isAlive():
                     sleep(.1)
+                hwThread = RaceTimerThread()
 
         hwThread.start()
     except Heat.DoesNotExist:
@@ -116,7 +118,6 @@ def start(request, groupId):
 
 def fake(request):
     global hardware
-    print(request.GET)
     hardware.setValue(hardware.SWITCH_IN, request.GET.get('sw', 0))
     hardware.setValue(hardware.LANE_1, request.GET.get('1', 0))
     hardware.setValue(hardware.LANE_2, request.GET.get('2', 0))
