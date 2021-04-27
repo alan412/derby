@@ -45,6 +45,8 @@ def heatData(request):
             if currentHeat:
                 hwThread = RaceTimerThread()
                 hwThread.start()
+            else:
+                hwThread = None
 
     return JsonResponse(data)
 
@@ -95,24 +97,20 @@ def updateHardware(request):
 def start(request, groupId):
     global currentHeat
     global hwThread
+    if hwThread:
+        hwThread.done = True
+        while hwThread.isAlive():
+            sleep(.1)
+        hwThread = None
     group = groupFromId(groupId)
     generateHeats(group)
     # sets global
     try:
         currentHeat = getNextHeat(group)
-        if not hwThread:
-            hwThread = RaceTimerThread()
-        else:
-            if not hwThread.done:
-                hwThread.done = True
-                while hwThread.isAlive():
-                    sleep(.1)
-                hwThread = RaceTimerThread()
-
+        hwThread = RaceTimerThread()
         hwThread.start()
     except Heat.DoesNotExist:
         currentHeat = None
-
     return audience(request, groupId)
 
 

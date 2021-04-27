@@ -24,6 +24,7 @@ class FakeGPIO:
         pass
 
     def input(self, pin):
+        sleep(0.01)
         if pin not in self.pins:
             return False
         return self.pins[pin]
@@ -93,13 +94,14 @@ class RaceTimerThread(Thread):
         self.done = False
         sleep(.5)  # give switch time to settle
         # wait for start switch to open
-        while True:
+        while not self.done:
             hardware.update()
             if not hardware.startSwitchClosed:
                 break
 
         self.startTime = time_ns()
-        sleep(.5)   # give switch time to settle
+        if not self.done:
+            sleep(.5)   # give switch time to settle
         while not self.done:
             hardware.update()
             elapsedTimeMs = self.getElapsedTime()
