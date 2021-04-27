@@ -1,3 +1,10 @@
+body{
+    background-color: black;
+    color: whitesmoke;
+}
+a{
+    color: aqua;
+}
 div.settings {
     display:grid;
     grid-template-columns: max-content max-content;
