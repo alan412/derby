@@ -133,7 +133,7 @@ def audience(request, groupId):
         return showLeaderboard(request, context, groupId)
     elif template == 'derby/currentHeat.html':
         group = groupFromId(groupId)
-        context = {"timeout": 5_000, "audience": True,
+        context = {"timeout": 15_000, "audience": True,
                    "heat": currentHeat,
                    "totalHeats": Heat.objects.filter(group=group).count(),
                    "interval": 200,
