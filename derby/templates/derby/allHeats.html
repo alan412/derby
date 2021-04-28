@@ -1,0 +1,25 @@
+{% extends "derby/base.html" %}
+{% block title %}All Heats{% endblock %}
+{% block content %}
+<H1>Heats for {{ group.name }}</h1>
+{% for heat in heats %}
+<H1>Heat {{heat.number}} of {{ totalHeats }}</H1>
+<table class="Heat">
+    <tr>
+        <th>Lane</th>
+        <th>Picture</th>
+        <th>Number</th>
+    </tr>
+ {% for result in heat.results %}
+<tr><td>{{result.lane.number}}</td>
+    <td>{% if result.car.picture %}
+            <img src=" /{{result.car.picture}}" height="100">
+        {% endif %}</td>
+    <td>{{result.car.number}}</td>
+</tr>
+{% endfor %}
+</table>
+<br />
+{% endfor %}
+
+{% endblock %}

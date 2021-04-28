@@ -152,10 +152,22 @@ def audience(request, groupId):
     return render(request, template, context)
 
 
-def remainingHeats(request, group):
-    # needs to be changed to be the color of the group
-    context = {"color": "red"}
-    return render(request, "derby/remaining.html", context)
+def allHeats(request, groupId):
+    group = groupFromId(groupId)
+    heatObjects = Heat.objects.filter(group=group)
+    heats = []
+    for heat in heatObjects:
+        heats.append({"number": heat.number,
+                      "results": Result.objects.filter(heat=heat)})
+
+    context = {
+        "group": group,
+        "heats": heats,
+        "totalHeats": len(heats)
+    }
+    print(context)
+
+    return render(request, "derby/allHeats.html", context)
 
 
 def allCars(request):
