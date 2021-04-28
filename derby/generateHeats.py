@@ -1,4 +1,5 @@
 from derby.models import Heat, Car, Lane, Result
+from random import randrange
 
 
 def hasCarBeenInLane(car, lane):
@@ -9,13 +10,34 @@ def hasCarBeenInLane(car, lane):
     return True
 
 
+def hasCarBeenInHeat(car, heat):
+    try:
+        Result.objects.get(car=car, heat=heat)
+    except Result.DoesNotExist:
+        return False
+    return True
+
+
+def getAvailableCars(cars, lane, newHeat):
+    listCars = []
+    # get list of cars not in this heat and not already in this lane
+    for car in cars:
+        if hasCarBeenInLane(car, lane):
+            continue
+        if hasCarBeenInHeat(car, newHeat):
+            continue
+        listCars.append(car)
+    return listCars
+
+
 def generateHeats(group):
     done = False
 
     carsInGroup = Car.objects.filter(group=group)
+    listLanes = list(Lane.objects.filter(active=True))
     if not carsInGroup:
         return
-    carList = list(carsInGroup)
+
     while not done:
         newHeat = Heat()
         newHeat.group = group
@@ -23,21 +45,16 @@ def generateHeats(group):
         newHeat.assignNumber()
 
         carPlaced = []
-        for lane in Lane.objects.filter(active=True):
-            for car in carList:
-                if car in carPlaced:
-                    continue
-                # car hasn't been in lane
-                if not hasCarBeenInLane(car, lane):
-                    newHeat.save()
-                    newResult = Result()
-                    newResult.heat = newHeat
-                    newResult.lane = lane
-                    newResult.car = car
-                    newResult.save()
-                    carPlaced.append(car)
-                    break
+        for lane in listLanes:
+            listCars = getAvailableCars(carsInGroup, lane, newHeat)
+            print(lane, listCars)
+            if listCars and len(listCars):
+                # Randomly pick car
+                car = listCars[randrange(0, len(listCars))]
+                newHeat.save()
+                newResult = Result(heat=newHeat, lane=lane, car=car)
+                newResult.save()
+                carPlaced.append(car)
+        listLanes.reverse()
         if not carPlaced:
             done = True
-        else:
-            carList = carList[1:] + [carList[0]]
