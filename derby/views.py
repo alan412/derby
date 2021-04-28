@@ -42,11 +42,7 @@ def heatData(request):
         if currentHeat:
             hwThread.saveHeat(currentHeat)
             currentHeat = getNextHeat(currentHeat.group)
-            if currentHeat:
-                hwThread = RaceTimerThread()
-                hwThread.start()
-            else:
-                hwThread = None
+        hwThread = None
 
     return JsonResponse(data)
 
@@ -139,11 +135,15 @@ def audience(request, groupId):
         context = {"timeout": 5_000, "audience": True,
                    "heat": currentHeat,
                    "totalHeats": Heat.objects.filter(group=group).count(),
-                   "interval": 250,
+                   "interval": 200,
                    "next": "derby/leaderboard.html"}
         if currentHeat:
-            results = Result.objects.filter(heat=currentHeat)
+            results = Result.objects.filter(
+                heat=currentHeat).order_by("lane")
             context["results"] = results
+            if not hwThread:
+                hwThread = RaceTimerThread()
+                hwThread.start()
         else:
             return redirect('/')
     else:
@@ -158,7 +158,7 @@ def allHeats(request, groupId):
     heats = []
     for heat in heatObjects:
         heats.append({"number": heat.number,
-                      "results": Result.objects.filter(heat=heat)})
+                      "results": Result.objects.filter(heat=heat).order_by("lane")})
 
     context = {
         "group": group,
