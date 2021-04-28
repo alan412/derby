@@ -124,6 +124,7 @@ def fake(request):
 
 def audience(request, groupId):
     global currentHeat
+    global hwThread
     template = request.GET.get('next', 'derby/currentHeat.html')
 
     if template == 'derby/leaderboard.html':
