@@ -2,32 +2,13 @@ from derby.models import Heat, Car, Lane, Result
 from random import randrange
 
 
-def hasCarBeenInLane(car, lane):
-    try:
-        Result.objects.get(car=car, lane=lane)
-    except Result.DoesNotExist:
-        return False
-    return True
-
-
-def hasCarBeenInHeat(car, heat):
-    try:
-        Result.objects.get(car=car, heat=heat)
-    except Result.DoesNotExist:
-        return False
-    return True
-
-
 def getAvailableCars(cars, lane, newHeat):
-    listCars = []
-    # get list of cars not in this heat and not already in this lane
-    for car in cars:
-        if hasCarBeenInLane(car, lane):
-            continue
-        if hasCarBeenInHeat(car, newHeat):
-            continue
-        listCars.append(car)
-    return listCars
+    notEligible = Result.objects.filter(car__in=cars) & \
+        (Result.objects.filter(heat=newHeat) |
+         Result.objects.filter(lane=lane))
+    notEligibleCars = set(result.car for result in notEligible)
+
+    return list(set(cars) - set(notEligibleCars))
 
 
 def generateHeats(group):
