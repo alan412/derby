@@ -25,17 +25,18 @@ def generateHeats(group):
         newHeat.finished = False
         newHeat.assignNumber()
 
-        carPlaced = []
+        carPlaced = False
         for lane in listLanes:
             listCars = getAvailableCars(carsInGroup, lane, newHeat)
             print(lane, listCars)
             if listCars and len(listCars):
                 # Randomly pick car
                 car = listCars[randrange(0, len(listCars))]
-                newHeat.save()
+                if not carPlaced:
+                    newHeat.save()
+                    carPlaced = True
                 newResult = Result(heat=newHeat, lane=lane, car=car)
                 newResult.save()
-                carPlaced.append(car)
         listLanes.reverse()
         if not carPlaced:
             done = True
