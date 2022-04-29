@@ -128,7 +128,7 @@ def audience(request, groupId):
     template = request.GET.get('next', 'derby/currentHeat.html')
 
     if template == 'derby/leaderboard.html':
-        context = {"timeout": 30_000, "audience": True,
+        context = {"timeout": 15_000, "audience": True,
                    "next": "derby/currentHeat.html"}
         return showLeaderboard(request, context, groupId)
     elif template == 'derby/currentHeat.html':
