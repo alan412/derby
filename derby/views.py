@@ -128,12 +128,12 @@ def audience(request, groupId):
     template = request.GET.get('next', 'derby/currentHeat.html')
 
     if template == 'derby/leaderboard.html':
-        context = {"timeout": 30_000, "audience": True,
+        context = {"timeout": 10_000, "audience": True,
                    "next": "derby/currentHeat.html"}
         return showLeaderboard(request, context, groupId)
     elif template == 'derby/currentHeat.html':
         group = groupFromId(groupId)
-        context = {"timeout": 15_000, "audience": True,
+        context = {"timeout": 10_000, "audience": True,
                    "heat": currentHeat,
                    "totalHeats": Heat.objects.filter(group=group).count(),
                    "interval": 200,
