@@ -110,6 +110,43 @@ def start(request, groupId):
     return audience(request, groupId)
 
 
+def rerunLastHeat(request, groupId):
+    global currentHeat
+    global hwThread
+    
+    # Stop any running hardware thread
+    if hwThread:
+        hwThread.done = True
+        while hwThread.is_alive():
+            sleep(.1)
+        hwThread = None
+    
+    group = groupFromId(groupId)
+    
+    # Find the last finished heat (highest number with finished=True)
+    lastHeat = Heat.objects.filter(group=group, finished=True).order_by('-number').first()
+    
+    if lastHeat:
+        # Clear all result times for this heat
+        results = Result.objects.filter(heat=lastHeat)
+        for result in results:
+            result.time = None
+            result.save()
+        
+        # Mark heat as not finished
+        lastHeat.finished = False
+        lastHeat.save()
+        
+        # Set as current heat
+        currentHeat = lastHeat
+        
+        # Initialize hardware thread
+        hwThread = RaceTimerThread()
+        hwThread.start()
+    
+    return audience(request, groupId)
+
+
 def fake(request):
     global hardware
     hardware.setValue(hardware.SWITCH_IN, request.GET.get('sw', 0))

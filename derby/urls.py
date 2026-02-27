@@ -11,6 +11,7 @@ urlpatterns = [
     path('allCars', views.allCars),
     path('fake', views.fake),
     path('<int:groupId>/start/', views.start),
+    path('<int:groupId>/rerunLastHeat/', views.rerunLastHeat),
     path('<int:groupId>/audience/', views.audience),
     path('<int:groupId>/leaderboard/', views.leaderboard),
     path('<int:groupId>/allHeats/', views.allHeats),

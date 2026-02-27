@@ -36,6 +36,9 @@ function placeTime(where, timeMilliseconds){
 <H1>Heat {{heat.number}} of {{totalHeats}}</H1>
 <H2>{{heat.group.name}}</H2>
 <H3 class="time">Not Started</H3>
+{% if not audience %}
+<p><a href="/derby/{{ heat.group.id }}/rerunLastHeat/">Rerun Last Heat</a></p>
+{% endif %}
 </center>
 <table class="Leaderboard">
 <tr><th>Lane</th><th></th><th>Time</th><th>Name</th><th>Owner</th><th>Picture</th></tr>
