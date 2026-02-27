@@ -88,6 +88,13 @@ def resetData(request):
     # Clear global current heat
     currentHeat = None
     
+    # Delete all car image files before deleting car records
+    cars = Car.objects.all()
+    for car in cars:
+        if car.picture:
+            # Delete the physical file from disk
+            car.picture.delete(save=False)
+    
     # Delete all cars and heats (results will cascade delete)
     Car.objects.all().delete()
     Heat.objects.all().delete()
