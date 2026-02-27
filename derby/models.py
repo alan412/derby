@@ -3,7 +3,7 @@ import sys
 from django.db import models
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from colorfield.fields import ColorField
-from PIL import Image
+from PIL import Image, ImageOps
 from io import BytesIO
 
 
@@ -38,15 +38,32 @@ class Car(models.Model):
 
     def resizeImage(self, image_field: ImageFieldFile, size: tuple):
         image = Image.open(image_field.file.file)
+        
+        # Apply EXIF orientation to fix rotation issues from camera photos
+        image = ImageOps.exif_transpose(image)
+        
         image.thumbnail(size=size)
         image_file = BytesIO()
-        image.save(image_file, image.format)
+        
+        # Save as JPEG to avoid issues with format
+        image_format = 'JPEG'
+        if image.mode in ('RGBA', 'LA', 'P'):
+            # Convert RGBA/LA/P to RGB for JPEG
+            background = Image.new('RGB', image.size, (255, 255, 255))
+            if image.mode == 'P':
+                image = image.convert('RGBA')
+            background.paste(image, mask=image.split()[-1] if image.mode in ('RGBA', 'LA') else None)
+            image = background
+        elif image.mode != 'RGB':
+            image = image.convert('RGB')
+            
+        image.save(image_file, image_format, quality=90)
         image_field.save(
             image_field.name,
             InMemoryUploadedFile(
                 image_file,
                 None, '',
-                image_field.file.content_type,
+                'image/jpeg',
                 image.size,
                 image_field.file.charset,
             ),
