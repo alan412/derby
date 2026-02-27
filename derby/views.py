@@ -74,6 +74,27 @@ def main(request):
     return render(request, "derby/main.html", context)
 
 
+def resetData(request):
+    global currentHeat
+    global hwThread
+    
+    # Stop any running hardware thread
+    if hwThread:
+        hwThread.done = True
+        while hwThread.is_alive():
+            sleep(.1)
+        hwThread = None
+    
+    # Clear global current heat
+    currentHeat = None
+    
+    # Delete all cars and heats (results will cascade delete)
+    Car.objects.all().delete()
+    Heat.objects.all().delete()
+    
+    return redirect('/')
+
+
 def testHardware(request):
     context = {'interval': 200}
     return render(request, "derby/testHardware.html", context)

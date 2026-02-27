@@ -19,4 +19,16 @@
 <H1><A HREF="allCars">All Cars</A></H1>
 
 <H2><A HREF="test">Test Hardware</A></H2>
+
+<H2><A HREF="#" onclick="return confirmReset()" style="color: red;">Reset All Data</A></H2>
+
+<script>
+function confirmReset() {
+    if (confirm('Are you sure you want to delete all cars, heats, and results? This cannot be undone!')) {
+        window.location.href = '/derby/resetData';
+        return true;
+    }
+    return false;
+}
+</script>
 {% endblock %}
