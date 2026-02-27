@@ -230,7 +230,7 @@ def allHeats(request, groupId):
 
 
 def allCars(request):
-    context = {"cars": Car.objects.all()}
+    context = {"cars": Car.objects.all().order_by('group', 'number')}
     return render(request, "derby/allCars.html", context)
 
 
