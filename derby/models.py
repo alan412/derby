@@ -25,12 +25,11 @@ class Car(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['group', 'number'], name='Unique car number in group')
+                fields=['number'], name='Unique car number')
         ]
 
     def assignNumber(self):
-        lastCar = Car.objects.filter(
-            group=self.group).order_by('-number').first()
+        lastCar = Car.objects.all().order_by('-number').first()
         if not lastCar:
             self.number = 1
         else:
